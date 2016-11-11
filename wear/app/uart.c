@@ -459,6 +459,11 @@ static void interpret_message(void) {
 		case UART_SET_RESTART:
 			while(1) {barrier();}
 			break;
+			
+		case UART_WRITE_MTCH:
+			write_mtch_settings();
+			send_mtch_update_status();
+			break;
 		
 		default:
 			break;
@@ -497,6 +502,7 @@ unsigned char uartCmdValid(unsigned char cmd)
 		case UART_SET_MTCH:
 		case UART_GET_MTCH:
 		case UART_SET_RESTART:
+		case UART_WRITE_MTCH:
 			retval=true;
 			break;		
 		

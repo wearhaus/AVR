@@ -63,146 +63,150 @@ bool write_mtch_settings(void) {
 		wdt_kick();
 	#endif
 	
-	twinkle(64, 64, 64);
+	twinkle(255, 0, 0);
 	
-	_delay_ms(500);
+	_delay_ms(16000);
 	
 	//turn off touch and save to NVRAM first
 	cmd_mtch6301(0x00);
-	_delay_ms(500);
+	_delay_ms(16000);
 	cmd_mtch6301(0x00);
-	_delay_ms(250);
+	_delay_ms(8000);
 	cmd_mtch6301(0x17);
-	_delay_ms(500);
+	_delay_ms(16000);
 
 	//GENERAL - INDEX 0x00
 	if (EEPROM_GENERAL_UPDATE_BOOL) {
-		twinkle(255, 0, 0);
+		twinkle(255, 255, 0);
 		write_status =  STATUS_OK;
 		 write_status |= cmd_write_register(0x00, 0x01, EEPROM_NUMRXCHANNELS); //NUM RX CHANNELS
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x00, 0x02, EEPROM_NUMTXCHANNELS); //NUM TX CHANNELS
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x00, 0x04, EEPROM_RXSCALE_7_0); //RX SCALING [7:0]
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x00, 0x05, EEPROM_RXSCALE_15_8); //RX SCALING [15:8]
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x00, 0x06, EEPROM_TXSCALE_7_0); //TX SCALING [7:0]
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x00, 0x07, EEPROM_TXSCALE_15_8); //TX SCALING [15:8]
-		_delay_ms(250);
+		_delay_ms(8000);
 		cmd_mtch6301(0x17);
-		_delay_ms(500);
+		_delay_ms(16000);
 		nvm_eeprom_write_byte(EEPROM_INDEX_GENERAL, STATUS_OK != write_status);
 	}
 	
 	
 	//RXMAP - INDEX 0x01
 	if (EEPROM_RXMAP_UPDATE_BOOL) {
-		twinkle(255, 128, 0);
+		twinkle(0, 255, 0);
 		write_status =  STATUS_OK;
 		 write_status |= cmd_write_register(0x01, 0x00, EEPROM_RXPIN0);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x01, 0x01, EEPROM_RXPIN1);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x01, 0x02, EEPROM_RXPIN2);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x01, 0x03, EEPROM_RXPIN3);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x01, 0x04, EEPROM_RXPIN4);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x01, 0x05, EEPROM_RXPIN5);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x01, 0x06, EEPROM_RXPIN6);
-		_delay_ms(250);
+		_delay_ms(8000);
+		/*
 		 write_status |= cmd_write_register(0x01, 0x07, EEPROM_RXPIN7);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x01, 0x08, EEPROM_RXPIN8);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x01, 0x09, EEPROM_RXPIN9);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x01, 0x0a, EEPROM_RXPIN10);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x01, 0x0b, EEPROM_RXPIN11);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x01, 0x0c, EEPROM_RXPIN12);
-		_delay_ms(250);
+		_delay_ms(8000);
+		*/
 		cmd_mtch6301(0x17);
-		_delay_ms(500);
+		_delay_ms(16000);
 		nvm_eeprom_write_byte(EEPROM_INDEX_RXMAP, STATUS_OK != write_status);
 	}
 	
 	
 	//TXMAP - INDEX 0x02
 	if (EEPROM_TXMAP_UPDATE_BOOL) {
-		twinkle(255, 255, 0);
+		twinkle(0, 255, 255);
 		write_status =  STATUS_OK;
 		 write_status |= cmd_write_register(0x02, 0x00, EEPROM_TXPIN0);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x01, EEPROM_TXPIN1);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x02, EEPROM_TXPIN2);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x03, EEPROM_TXPIN3);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x04, EEPROM_TXPIN4);
-		_delay_ms(250);
+		_delay_ms(8000);
+		/*
 		 write_status |= cmd_write_register(0x02, 0x05, EEPROM_TXPIN5);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x06, EEPROM_TXPIN6);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x07, EEPROM_TXPIN7);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x08, EEPROM_TXPIN8);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x09, EEPROM_TXPIN9);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x0a, EEPROM_TXPIN10);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x0b, EEPROM_TXPIN11);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x0c, EEPROM_TXPIN12);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x0d, EEPROM_TXPIN13);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x0e, EEPROM_TXPIN14);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x0f, EEPROM_TXPIN15);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x10, EEPROM_TXPIN16);
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x02, 0x11, EEPROM_TXPIN17);
-		_delay_ms(250);
+		_delay_ms(8000);
+		*/
 		cmd_mtch6301(0x17);
-		_delay_ms(500);
+		_delay_ms(16000);
 		nvm_eeprom_write_byte(EEPROM_INDEX_TXMAP, STATUS_OK != write_status);
 	}
 	
 	
 	//SELF - INDEX 0x10
 	if (EEPROM_SELF_UPDATE_BOOL) {
-		twinkle(0, 255, 0);
+		twinkle(0, 0, 255);
 		write_status =  STATUS_OK;
 		 write_status |= cmd_write_register(0x10, 0x00, EEPROM_SELFSCANTIME); //SELF SCAN TIME
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x10, 0x01, EEPROM_SELFTOUCHTHRES); //SELF THRESHOLD
-		_delay_ms(250);
+		_delay_ms(8000);
 		cmd_mtch6301(0x17);
-		_delay_ms(500);
+		_delay_ms(16000);
 		nvm_eeprom_write_byte(EEPROM_INDEX_SELF, STATUS_OK != write_status);
 	}
 	
 	
 	//MUTUAL - INDEX 0x20
 	if (EEPROM_MUTUAL_UPDATE_BOOL) {
-		twinkle(0, 255, 255);
+		twinkle(255, 0, 255);
 		write_status =  STATUS_OK;
 		 write_status |= cmd_write_register(0x20, 0x00, EEPROM_MUTSCANTIME); //MUTUAL SCAN TIME
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x20, 0x01, EEPROM_MUTTOUCHTHRES); //MUTUAL THRESHOLD
-		_delay_ms(250);
+		_delay_ms(8000);
 		cmd_mtch6301(0x17);
-		_delay_ms(500);
+		_delay_ms(16000);
 		nvm_eeprom_write_byte(EEPROM_INDEX_MUTUAL, STATUS_OK != write_status);
 	}
 	
@@ -212,19 +216,19 @@ bool write_mtch_settings(void) {
 		twinkle(0, 0, 255);
 		write_status =  STATUS_OK;
 		 write_status |= cmd_write_register(0x30, 0x00, EEPROM_FLIPSTATE); //FLIP STATE
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x30, 0x01, EEPROM_NUMAVG); //NUM AVERAGES
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x30, 0x04, EEPROM_MINTOUCHDIST); //MIN TOUCH DISTANCE
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x30, 0x05, EEPROM_PENDOWNTIME); //PEN DOWN TIME
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x30, 0x06, EEPROM_PENUPTIME); //PEN UP TIME
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x30, 0x07, EEPROM_TOUCHSUPPRESSION); //TOUCH SUPPRESSION (MAX TOUCH POINTS)
-		_delay_ms(250);
+		_delay_ms(8000);
 		cmd_mtch6301(0x17);
-		_delay_ms(500);
+		_delay_ms(16000);
 		nvm_eeprom_write_byte(EEPROM_INDEX_DECODING, STATUS_OK != write_status);
 	}
 	
@@ -234,33 +238,33 @@ bool write_mtch_settings(void) {
 		twinkle(255, 0, 255);
 		write_status =  STATUS_OK;
 		 write_status |= cmd_write_register(0x50, 0x00, EEPROM_RXSWIPELEN); //RX SWIPE LENGTH
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x50, 0x01, EEPROM_TXSWIPELEN); //TX SWIPE LENGTH
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x50, 0x02, EEPROM_SWIPEBOUNDARY); //SWIPE BOUNDARY
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x50, 0x03, EEPROM_SWIPEHOLDTHRES); //SWIPE HOLD THRESHOLD
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x50, 0x04, EEPROM_SWIPETIME_7_0); //SWIPE TIME [7:0]
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x50, 0x05, EEPROM_SWIPETIME_15_8); //SWIPE TIME [15:8]
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x50, 0x06, EEPROM_TAPTIME_7_0); //TAP TIME [7:0]
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x50, 0x07, EEPROM_TAPTIME_15_8); //TAP TIME [15:8]
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x50, 0x08, EEPROM_TAPTHRES); //TAP THRESHOLD
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x50, 0x09, EEPROM_MINSWIPEVELOCITY); //MIN SWIPE VELOCITY
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x50, 0x0a, EEPROM_DOUBLETIME_7_0); //DOUBLE TAP TIME [7:0]
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x50, 0x0b, EEPROM_DOUBLETIME_15_8); //DOUBLE TAP [15:8]
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x50, 0x0c, EEPROM_EDGEKEEPOUT); //GESTURE EDGE KEEPOUT
-		_delay_ms(250);
+		_delay_ms(8000);
 		cmd_mtch6301(0x17);
-		_delay_ms(500);
+		_delay_ms(16000);
 		nvm_eeprom_write_byte(EEPROM_INDEX_GESTURES, STATUS_OK != write_status);
 	}
 	
@@ -269,30 +273,32 @@ bool write_mtch_settings(void) {
 	if (EEPROM_CONFIG_UPDATE_BOOL) {
 		twinkle(255, 255, 255);
 		write_status =  STATUS_OK;
+		/*
 		 write_status |= cmd_write_register(0xf0, 0x00, EEPROM_SLEEP_7_0); //SLEEP TIMEOUT [7:0]
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0xf0, 0x01, EEPROM_SLEEP_15_8); //SLEEP TIMEOUT [15:8]
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0xf0, 0x02, EEPROM_SLEEP_23_16); //SLEEP TIMEOUT [23:16]
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0xf0, 0x03, EEPROM_SLEEP_31_24); //SLEEP TIMEOUT [31:24]
-		_delay_ms(250);
+		_delay_ms(8000);
+		*/
 		 write_status |= cmd_write_register(0xf0, 0x07, EEPROM_TOUCHPACKETCFG); //TOUCH PACKET CFG
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0xf0, 0x09, EEPROM_GESTUREPACKETCFG); //GESTURE PACKET CFG
-		_delay_ms(250);
+		_delay_ms(8000);
 		 write_status |= cmd_write_register(0xf0, 0x0a, EEPROM_STATUSPACKETCFG); //STATUS PACKET CFG
-		_delay_ms(250);
+		_delay_ms(8000);
 		cmd_mtch6301(0x17);
-		_delay_ms(500);
+		_delay_ms(16000);
 		nvm_eeprom_write_byte(EEPROM_INDEX_CONFIG, STATUS_OK != write_status);
 	}
 	
 	//Restore touch functionality and save to NVRAM
 	cmd_mtch6301(0x01);
-	_delay_ms(250);
+	_delay_ms(8000);
 	cmd_mtch6301(0x17);
-	_delay_ms(500);
+	_delay_ms(16000);
 	
 	nvm_eeprom_write_byte(EEPROM_INDEX_MTCH, (
 		EEPROM_GENERAL_UPDATE_BOOL	|
@@ -305,6 +311,8 @@ bool write_mtch_settings(void) {
 		EEPROM_GESTURES_UPDATE_BOOL	|
 		EEPROM_CONFIG_UPDATE_BOOL	
 	));
+	
+	send_mtch_update_status();
 	
 	if (EEPROM_MTCH_UPDATE_BOOL) {
 		twinkle(255, 0, 0);

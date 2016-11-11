@@ -46,6 +46,8 @@ typedef struct
 #define UART_SET_MTCH			0x54
 #define UART_GET_MTCH			0x48
 
+#define UART_WRITE_MTCH			0x57
+
 #define UART_COLOR_LEN      9
 #define UART_PULSE_LEN      1
 #define UART_LVL_LEN		2
