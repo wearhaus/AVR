@@ -91,6 +91,7 @@ void init_chargingpin(port_pin_t pin)
 */
 bool ischarging(void)
 {
+#ifndef DEMO	
 	if (ioport_pin_is_high(CHARGING_PIN))
 	{
 		return true;
@@ -99,6 +100,9 @@ bool ischarging(void)
 	{
 		return false;
 	}
+#else
+      return false;
+#endif
 }
 
 /*
@@ -374,6 +378,10 @@ void update_led_charge(void)
 			value_charge = chargeLVL4;
 		}
 		else {
+			//avoid too dark and give user a prompt
+			if(chargeLVL0==0)
+			    value_charge = 800;
+			else
 			value_charge = chargeLVL0;
 		}
 		flag_initcharge = false;

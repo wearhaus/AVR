@@ -12,6 +12,7 @@
 #include <wear.h>
 #include <adc_app.h>
 #include <mtch6301.h>
+#include <timer_app.h>
 
 uint8_t rxmode=0,num_rx=0;
 uint8_t uart_length = 6;
@@ -33,6 +34,18 @@ bool pulse_state = false;
 bool pulse_state_changed = false;
 bool shutdown_received = false;
 	
+bool tempPulseDisabled=false;
+
+
+#define UART_BUFF_SIZE 128
+typedef struct{
+unsigned char  uart_RxBuff[UART_BUFF_SIZE];
+unsigned char  headp;
+unsigned char  tailp;
+}UartRxBuffStruct;
+
+UartRxBuffStruct g_uartBuff;
+
 void init_uart(void)
 {
 #ifdef ENABLE_USARTD0
@@ -60,6 +73,9 @@ void init_uart(void)
 
 	pmic_enable_level(PMIC_LVL_HIGH);
 	cpu_irq_enable();
+
+	g_uartBuff.headp=0;
+	g_uartBuff.tailp=0;
 }
 
 void uart_send_status(uint8_t status_uart)
@@ -237,6 +253,10 @@ static inline void set_color_from_buffer(void) {
 	}
 }
 
+static inline void set_mtch_register_from_buffer(void) {
+	cmd_write_register(buffer_data[2], buffer_data[3], buffer_data[4]);
+}
+
 
 void led_set_from_colors(void) {
 	m_led_struct[0].r = colors[0];
@@ -338,6 +358,7 @@ static void interpret_message(void) {
 	#endif	
 			send_response(UART_SET_COLOR, 0xff);
 			set_color_from_buffer();
+			resetDisablePulseCount();
 			break;
 			
 		case UART_SET_PULSE:
@@ -516,17 +537,107 @@ unsigned char uartCmdValid(unsigned char cmd)
 /*
 brief RX complete interrupt service routine.
 */
+void uart_buffPosInc(unsigned char *p)
+{
+    if(*p<UART_BUFF_SIZE-1)
+  	(*p)++;
+    else
+  	(*p)=0;
+}
+
+void uart_buffPosChange(unsigned char *p,unsigned char num)
+{
+    if(*p+num<=UART_BUFF_SIZE-1)
+  	*p+=num;
+    else
+    {
+  	*p+=num;
+	*p-=UART_BUFF_SIZE;
+    }
+}
+
+unsigned char uart_buffGetData(unsigned char p,unsigned char shift)
+{
+    if(p+shift<=UART_BUFF_SIZE-1)
+  	return g_uartBuff.uart_RxBuff[p+shift];
+    else
+    {
+  	p+=shift;
+	return g_uartBuff.uart_RxBuff[p-UART_BUFF_SIZE];
+    }
+
+}
+
+
+unsigned char uart_buffDataSize(void)
+{
+    unsigned char len;
+    if(g_uartBuff.headp>=g_uartBuff.tailp)
+    {
+        len= g_uartBuff.headp-g_uartBuff.tailp;
+    }
+    else
+    {
+        len= g_uartBuff.headp+UART_BUFF_SIZE-g_uartBuff.tailp;
+    }
+    return len;	
+}
+
+//received data packet : cmd+ len + data
+unsigned char uart_receivedData(void)
+{
+    unsigned char temp;
+
+    //no data received.
+    if(g_uartBuff.tailp==g_uartBuff.headp)
+        return false;
+	
+    //sync with packet header and discard any invalid data.
+    while(uartCmdValid(g_uartBuff.uart_RxBuff[g_uartBuff.tailp])==0)
+    {
+        uart_buffPosInc(&g_uartBuff.tailp);
+    }
+
+    //received enough data?
+    temp=uart_buffDataSize();
+   // if(temp > 2)
+    if(temp >= 11)	//BT will send 11 bytes each time.	
+    {
+        //if(temp>=uart_buffGetData(g_uartBuff.tailp,1)+2)
+           return true;
+    }
+	
+    return false; 
+} 
+
+//handle the received data.
+void uart_Task(void)
+{
+    unsigned char i,temp;
+    if(uart_receivedData())
+    {
+        //temp=uart_buffGetData(g_uartBuff.tailp,1)+2;
+	  temp=11; //BT will send 11 bytes each time.
+	  for(i=0;i<temp;i++)
+	  {
+            buffer_data[i]=uart_buffGetData(g_uartBuff.tailp,0);
+	      uart_buffPosInc(&g_uartBuff.tailp);
+	  }
+	   interpret_message();
+    }
+}
+
+
 ISR(USARTD0_RXC_vect)
 {
+#if 1
+    while(usart_rx_is_complete(&USARTD0) ) {
+        g_uartBuff.uart_RxBuff[g_uartBuff.headp] =((uint8_t)(&USARTD0)->DATA);
+	  uart_buffPosInc(&g_uartBuff.headp);
+    }
+#else     
 	 unsigned int count=0;
 	 unsigned char errflag=0;
-	// twinkle(buffer_data[0], buffer_data[1], buffer_data[2]);
-	/*for (int i=0; i<11; i++) {
-		buffer_data[i] = usart_getchar(&USARTD0);
-	}*/
-	
-
-     
 	for (int i=0; i<11; i++) {
 		while (usart_rx_is_complete(&USARTD0) == false) {
 #ifdef LIMIT_LOOP //do not wait for ever.
@@ -552,52 +663,7 @@ ISR(USARTD0_RXC_vect)
 	
 	uart_done_flag = true;
 	
-	//twinkle(usart_getchar(&USARTD0), usart_getchar(&USARTD0), usart_getchar(&USARTD0));
-//	usart_putchar(&USARTD0, 0x0f);
-	
-	/* 11 bytes sent everytime, with every command
-	   Fault tolerant against hanging as watchdog will reset the
-	   ATMEL*/
-	/*
-	if (ischarging())
-	{
-		usart_getchar(&USARTD0);;
-		return;
-	}
-	
-	else
-	{
-		if (buffer_data[0] == LED_COLOR_ID)
-		{
-			buffer_data[count_uart ++] = usart_getchar(&USARTD0);
-	//		usart_putchar(&USARTD0, buffer_data[count_uart - 1]);
-			if (count_uart > 10)
-			{
-				count_uart = 0;
-				uart_done_flag = true;
-			}			
-		}
-		else
-		{
-			buffer_data[0] = usart_getchar(&USARTD0);
-	//		usart_putchar(&USARTD0, buffer_data[0]);
-			count_uart = 1;
-			if (buffer_data[0] != LED_COLOR_ID)
-			{
-				uart_done_flag = true;
-			}			
-		}
-		while(count_uart < 11)
-		{
-			while(!(USARTD0_STATUS & USART_RXCIF_bm));
-			
-			buffer_data[count] = USARTD0_DATA;
-			count_uart = count_uart + 1;
-			usart_putchar(&USARTD0, buffer_data[0]);
-			usart_putchar(&USARTD0, count_uart);
-		}
-		}
-	*/
+#endif
 }
 
 void uart_send_bytes(char * byte_array, unsigned int len)
