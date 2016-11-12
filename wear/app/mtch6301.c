@@ -68,10 +68,8 @@ bool write_mtch_settings(void) {
 	_delay_ms(16000);
 	
 	//turn off touch and save to NVRAM first
-	cmd_mtch6301(0x00);
+	cmd_mtch6301(0x01);
 	_delay_ms(16000);
-	cmd_mtch6301(0x00);
-	_delay_ms(8000);
 	cmd_mtch6301(0x17);
 	_delay_ms(16000);
 
@@ -91,6 +89,25 @@ bool write_mtch_settings(void) {
 		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x00, 0x07, EEPROM_TXSCALE_15_8); //TX SCALING [15:8]
 		_delay_ms(8000);
+		
+		write_status |= cmd_write_register(0x00, 0x00, 0x00); //flag1
+		_delay_ms(8000);
+		write_status |= cmd_write_register(0x00, 0x03, 0xd0); //customFlag
+		_delay_ms(8000);
+		write_status |= cmd_write_register(0x00, 0x08, 0x00); //rxDiagChannel
+		_delay_ms(8000);
+		write_status |= cmd_write_register(0x00, 0x09, 0x00); //txDiagChannel
+		_delay_ms(8000);
+		/*
+		write_status |= cmd_write_register(0x00, 0x0a, 0xfa); //baseUpdateTime
+		_delay_ms(8000);
+		write_status |= cmd_write_register(0x00, 0x0b, 0x32); //stuckThreshold
+		_delay_ms(8000);
+		write_status |= cmd_write_register(0x00, 0x0c, 0x70); //stuckTimeout [7:0]
+		_delay_ms(8000);
+		write_status |= cmd_write_register(0x00, 0x0d, 0x17); //stuckTimeout [15:8]
+		_delay_ms(8000);
+		*/
 		cmd_mtch6301(0x17);
 		_delay_ms(16000);
 		nvm_eeprom_write_byte(EEPROM_INDEX_GENERAL, STATUS_OK != write_status);
@@ -191,6 +208,15 @@ bool write_mtch_settings(void) {
 		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x10, 0x01, EEPROM_SELFTOUCHTHRES); //SELF THRESHOLD
 		_delay_ms(8000);
+		
+		write_status |= cmd_write_register(0x10, 0x02, 0x01); //selfSampleFreq
+		_delay_ms(8000);
+		write_status |= cmd_write_register(0x10, 0x03, 0x01); //stutterMult
+		_delay_ms(8000);
+		//cmd_write_register(0x11, 0x00, 0x00); //selfscanfinetune...
+		//_delay_ms(8000);
+		
+		
 		cmd_mtch6301(0x17);
 		_delay_ms(16000);
 		nvm_eeprom_write_byte(EEPROM_INDEX_SELF, STATUS_OK != write_status);
@@ -205,6 +231,19 @@ bool write_mtch_settings(void) {
 		_delay_ms(8000);
 		 write_status |= cmd_write_register(0x20, 0x01, EEPROM_MUTTOUCHTHRES); //MUTUAL THRESHOLD
 		_delay_ms(8000);
+		
+		 write_status |= cmd_write_register(0x20, 0x02, 0x16); //mutSampleFreq
+		_delay_ms(8000);
+		//cmd_write_register(0x21, 0x00, 0x00); //mutscanfinetune...
+		//_delay_ms(8000);
+		
+		write_status |= cmd_write_register(0x30, 0x02, 0x05); //minCuspDelta
+		_delay_ms(8000);
+		write_status |= cmd_write_register(0x30, 0x03, 0xff); //weightThreshold
+		_delay_ms(8000);
+		write_status |= cmd_write_register(0x30, 0x09, 0x96); //largeActThres
+		_delay_ms(8000);
+		
 		cmd_mtch6301(0x17);
 		_delay_ms(16000);
 		nvm_eeprom_write_byte(EEPROM_INDEX_MUTUAL, STATUS_OK != write_status);
@@ -289,14 +328,47 @@ bool write_mtch_settings(void) {
 		_delay_ms(8000);
 		 write_status |= cmd_write_register(0xf0, 0x0a, EEPROM_STATUSPACKETCFG); //STATUS PACKET CFG
 		_delay_ms(8000);
+
+		/*
+		cmd_write_register(0xf0, 0x04, 0x02); //sleepConfig
+		_delay_ms(8000);
+		cmd_write_register(0xf0, 0x05, 0x07); //wdtTimeout
+		_delay_ms(8000);
+		cmd_write_register(0xf0, 0x06, 0x81); //diagPacketConfig
+		_delay_ms(8000);
+		cmd_write_register(0xf0, 0x08, 0x81); //commandPacketConfig
+		_delay_ms(8000);
+		*/
+				
+		write_status |= cmd_write_register(0x30, 0x00, EEPROM_FLIPSTATE); //FLIP STATE
+		_delay_ms(8000);
+		
 		cmd_mtch6301(0x17);
 		_delay_ms(16000);
 		nvm_eeprom_write_byte(EEPROM_INDEX_CONFIG, STATUS_OK != write_status);
 	}
+	/*
+	cmd_write_register(0x40, 0x00, 0x12); //cpTimeOut
+	_delay_ms(8000);
+	cmd_write_register(0x40, 0x01, 0x19); //selfNoiseTresh
+	_delay_ms(8000);
+	cmd_write_register(0x40, 0x02, 0x17); //mutNoiseThresh
+	_delay_ms(8000);
+	cmd_write_register(0x40, 0x03, 0x14); //frequencyChanges
+	_delay_ms(8000);
+	cmd_write_register(0x40, 0x04, 0x05); //sampleSize
+	_delay_ms(8000);
+	cmd_write_register(0x40, 0x05, 0x04); //selfNoiseScanTime
+	_delay_ms(8000);
+	cmd_write_register(0x40, 0x06, 0x07); //mutNoiseScanTime
+	_delay_ms(8000);
+	cmd_write_register(0x40, 0x07, 0x02); //filterCoeff
+	_delay_ms(8000);
+	*/
 	
 	//Restore touch functionality and save to NVRAM
-	cmd_mtch6301(0x01);
-	_delay_ms(8000);
+	cmd_mtch6301(0x00);
+	_delay_ms(16000);
 	cmd_mtch6301(0x17);
 	_delay_ms(16000);
 	
@@ -311,8 +383,6 @@ bool write_mtch_settings(void) {
 		EEPROM_GESTURES_UPDATE_BOOL	|
 		EEPROM_CONFIG_UPDATE_BOOL	
 	));
-	
-	send_mtch_update_status();
 	
 	if (EEPROM_MTCH_UPDATE_BOOL) {
 		twinkle(255, 0, 0);
