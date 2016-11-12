@@ -17,4 +17,6 @@ void init_timer4(void);
 void init_timer5(void);
 void init_timerd5(void);
 
+void resetDisablePulseCount(void);
+
 #endif /* TIMER_APP_H_ */

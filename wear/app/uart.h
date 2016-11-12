@@ -73,10 +73,12 @@ bool get_pulse_state(void);
 bool get_and_clear_pulse_state_changed(void);
 void trigger_pulse_state_changed(void);
 void led_set_from_colors(void);
+void uart_Task(void);
 
 extern volatile uint8_t buffer_data[13];
 extern volatile uint8_t colors[9];
 extern bool shutdown_received;
 extern bool uart_done_flag;
+extern bool tempPulseDisabled;
 
 #endif /* UART_H_ */

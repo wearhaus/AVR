@@ -343,6 +343,7 @@ int main(void)
 			//twinkle(0, 0, 0);
 		}
 		
+	        uart_Task();
 	
 		if (ischarging()) 
 		{
@@ -379,6 +380,10 @@ int main(void)
 				tc45_disable(&TCC4);
 				save_led_to_eeprom();
 				twinkle(0, 0, 0);
+				//turn off watch dog.
+				wdt_disable();
+				cpu_irq_disable();
+				while(1);
 			}
 			else if (get_and_clear_pulse_state_changed()) {
 				if (get_pulse_state()) {
@@ -412,7 +417,7 @@ int main(void)
 			}
 			else {
 				// if the fht led function was turned on
-				if (fht_flag == true)
+				if (fht_flag == true&&tempPulseDisabled==false)
 				{
 					if (flag_fft == true)
 					{

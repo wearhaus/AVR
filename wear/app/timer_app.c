@@ -8,6 +8,7 @@
 #include <config_app.h>
 #include <adc_app.h>
 #include <wear.h>
+#include "uart.h"
 
 volatile bool flag_timer5;
 volatile bool flag_timerd5;
@@ -34,11 +35,26 @@ static inline void timer5_overflow_interrupt_callback(void)
 	//usart_putchar(&USARTD0, 0x28);
 }
 
+
+static U16 disablePulseCount=200;
+
+void resetDisablePulseCount(void)
+{
+     disablePulseCount=200;
+     tempPulseDisabled=1;
+}
+
 static inline timerD5_overflow_interrupt_callback(void)
 {
 	flag_timerd5 = true;
 	//wdt_reset(); // kick the watchdog - DEPRECATED
 	
+	if(disablePulseCount>=1)
+	{
+	    disablePulseCount--;
+	    if(disablePulseCount==0)
+	        tempPulseDisabled=0;
+	}
 	tc45_clear_overflow(&TCD5);
 	
 	//adc_start_conversion(&ADCA, ADC_CH0);
