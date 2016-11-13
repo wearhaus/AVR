@@ -342,8 +342,9 @@ int main(void)
 			latest_gesture = NONE;
 			//twinkle(0, 0, 0);
 		}
-		
+	#ifdef NEW_UART_HANDLE	
 	        uart_Task();
+        #endif
 	
 		if (ischarging()) 
 		{

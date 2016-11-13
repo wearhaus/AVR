@@ -22,6 +22,7 @@
 
 #define ENABLE_WDT
 #define LIMIT_LOOP  //avoid loop too long time when problem happen.
+#define NEW_UART_HANDLEx  //due to led timing requirement, temp comment this.
 
 /*
 	WS2812 config

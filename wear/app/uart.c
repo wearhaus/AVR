@@ -36,7 +36,7 @@ bool shutdown_received = false;
 	
 bool tempPulseDisabled=false;
 
-
+#ifdef NEW_UART_HANDLE
 #define UART_BUFF_SIZE 128
 typedef struct{
 unsigned char  uart_RxBuff[UART_BUFF_SIZE];
@@ -45,7 +45,7 @@ unsigned char  tailp;
 }UartRxBuffStruct;
 
 UartRxBuffStruct g_uartBuff;
-
+#endif
 void init_uart(void)
 {
 #ifdef ENABLE_USARTD0
@@ -73,9 +73,10 @@ void init_uart(void)
 
 	pmic_enable_level(PMIC_LVL_HIGH);
 	cpu_irq_enable();
-
+#ifdef NEW_UART_HANDLE
 	g_uartBuff.headp=0;
 	g_uartBuff.tailp=0;
+#endif 
 }
 
 void uart_send_status(uint8_t status_uart)
@@ -537,6 +538,7 @@ unsigned char uartCmdValid(unsigned char cmd)
 /*
 brief RX complete interrupt service routine.
 */
+#ifdef NEW_UART_HANDLE
 void uart_buffPosInc(unsigned char *p)
 {
     if(*p<UART_BUFF_SIZE-1)
@@ -596,6 +598,8 @@ unsigned char uart_receivedData(void)
     while(uartCmdValid(g_uartBuff.uart_RxBuff[g_uartBuff.tailp])==0)
     {
         uart_buffPosInc(&g_uartBuff.tailp);
+	  if(g_uartBuff.tailp==g_uartBuff.headp)
+	     return false;
     }
 
     //received enough data?
@@ -626,11 +630,11 @@ void uart_Task(void)
 	   interpret_message();
     }
 }
-
+#endif 
 
 ISR(USARTD0_RXC_vect)
 {
-#if 1
+#ifdef NEW_UART_HANDLE
     while(usart_rx_is_complete(&USARTD0) ) {
         g_uartBuff.uart_RxBuff[g_uartBuff.headp] =((uint8_t)(&USARTD0)->DATA);
 	  uart_buffPosInc(&g_uartBuff.headp);
