@@ -387,7 +387,7 @@ void update_led_charge(void)
 		flag_initcharge = false;
 	}
 	
-	if (ischarging() == false)
+	if (ischarging() == false&&core_status==STATUS_CHARGE)
 	{
 		old_core_status = core_status;
 		core_status = STATUS_BATT_READ;

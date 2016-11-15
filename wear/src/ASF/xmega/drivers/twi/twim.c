@@ -122,7 +122,7 @@ static inline bool twim_idle (const TWI_t * twi)
  *
  * \return STATUS_OK if the bus is acquired, else ERR_BUSY.
  */
-static inline status_code_t twim_acquire(bool no_wait)
+static inline status_code_t twim_acquire(TWI_t *twi, bool no_wait)
 {
 	int count=0;
 	while (transfer.locked) {
@@ -133,13 +133,21 @@ static inline status_code_t twim_acquire(bool no_wait)
 			return ERR_BUSY;
 		#endif
 	}
-
+#ifdef NOT_DISABLE_GLOBAL_INT
+      irqflags_t const flags = twim_irq_save(twi);
+#else
 	irqflags_t const flags = cpu_irq_save ();
+#endif
 
 	transfer.locked = true;
 	transfer.status = OPERATION_IN_PROGRESS;
 
+
+#ifdef NOT_DISABLE_GLOBAL_INT	 
+      twim_irq_restore(twi,flags);
+#else
 	cpu_irq_restore (flags);
+#endif
 
 	return STATUS_OK;
 }
@@ -370,8 +378,7 @@ status_code_t twi_master_transfer(TWI_t *twi,
 	}
 
 	/* Initiate a transaction when the bus is ready. */
-
-	status_code_t status = twim_acquire(package->no_wait);
+	status_code_t status = twim_acquire(twi,package->no_wait);
 
 	if (STATUS_OK == status) {
 		transfer.bus         = (TWI_t *) twi;

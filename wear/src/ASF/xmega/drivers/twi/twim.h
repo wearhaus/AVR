@@ -154,6 +154,22 @@ static inline void twi_master_disable(TWI_t *twi)
   twi->MASTER.CTRLA &= (~TWI_MASTER_ENABLE_bm);
 }
 
+static inline uint8_t twim_irq_save( TWI_t * twi)
+{
+    uint8_t retval;
+    retval=twi->MASTER.CTRLA&TWI_MASTER_INTLVL_gm;
+
+    twi->MASTER.CTRLA &= (~(TWI_MASTER_INTLVL_gm));
+    
+    return retval;
+}
+
+
+static inline void twim_irq_restore( TWI_t * twi,uint8_t lvl)
+{
+    twi->MASTER.CTRLA |= lvl;    
+}
+
 
 #ifdef __cplusplus
 }

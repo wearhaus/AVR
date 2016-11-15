@@ -58,7 +58,6 @@
 #  define USART_DORD_bm 0x04
 #endif
 
-#define LIMIT_LOOP  //avoid loop too long time when problem happen.
 
 /**
  * \brief Initialize USART in RS232 mode.

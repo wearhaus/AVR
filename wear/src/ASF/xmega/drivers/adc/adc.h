@@ -452,13 +452,24 @@ bool adc_is_enabled(ADC_t *adc);
  */
 static inline void adc_start_conversion(ADC_t *adc, uint8_t ch_mask)
 {
+#ifdef NOT_DISABLE_GLOBAL_INT
+	irqflags_t flags = adc->CH0.INTCTRL;
+      adc->CH0.INTCTRL &= (~(ADC_CH_INTLVL_gm));
+#else
 	irqflags_t flags = cpu_irq_save();
+#endif
+	
 #if !XMEGA_E
 	adc->CTRLA |= ch_mask << ADC_CH0START_bp;
 #else
 	adc->CTRLA |= ch_mask << ADC_START_bp;
 #endif
+
+#ifdef NOT_DISABLE_GLOBAL_INT
+      adc->CH0.INTCTRL =flags;
+#else
 	cpu_irq_restore(flags);
+#endif
 }
 
 /**
