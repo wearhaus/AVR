@@ -60,7 +60,7 @@ app/uart.d app/uart.o: ../app/uart.c ../src/asf.h \
  ../src/ASF/xmega/drivers/usart/usart.h ../src/config/conf_usart_serial.h \
  ../src/ASF/xmega/drivers/wdt/wdt.h ../app/config_app.h ../app/eeprom.h \
  ../app/uart.h ../app/wear.h ../app/ws2812.h ../app/adc_app.h \
- ../app/mtch6301.h
+ ../app/mtch6301.h ../app/timer_app.h
 
 ../src/asf.h:
 
@@ -213,3 +213,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../app/adc_app.h:
 
 ../app/mtch6301.h:
+
+../app/timer_app.h:

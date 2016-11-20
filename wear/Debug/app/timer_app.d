@@ -59,7 +59,7 @@ app/timer_app.d app/timer_app.o: ../app/timer_app.c ../src/asf.h \
  ../src/ASF/common/services/serial/xmega_usart/usart_serial.h \
  ../src/ASF/xmega/drivers/usart/usart.h ../src/config/conf_usart_serial.h \
  ../src/ASF/xmega/drivers/wdt/wdt.h ../app/config_app.h ../app/adc_app.h \
- ../app/wear.h ../app/ws2812.h
+ ../app/wear.h ../app/ws2812.h ../app/uart.h
 
 ../src/asf.h:
 
@@ -206,3 +206,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../app/wear.h:
 
 ../app/ws2812.h:
+
+../app/uart.h:
