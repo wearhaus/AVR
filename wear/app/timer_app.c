@@ -57,6 +57,22 @@ static inline timerD5_overflow_interrupt_callback(void)
 	}
 	tc45_clear_overflow(&TCD5);
 	
+        //move led display here because of uart/led timing requirement.
+	if(flag_ledRefresh)
+	{
+	     tc45_set_overflow_interrupt_level(&TCD5, TC45_INT_LVL_OFF);
+
+           for (int i=0; i<9; i++) {
+		   colors[i] = buffer_data[i+2];
+		  // nvm_eeprom_write_byte(i+1, colors[i]);
+           }
+
+	    if (!ischarging()) {
+		set_flash_ws2812(m_led_struct, 6);
+	    }		   
+	     tc45_set_overflow_interrupt_level(&TCD5, TC45_INT_LVL_MED);
+	     flag_ledRefresh=0;
+	}
 	//adc_start_conversion(&ADCA, ADC_CH0);
 }
 
@@ -109,7 +125,7 @@ void init_timer5(void)
 void init_timerd5(void)
 {
 	tc45_enable(&TCD5);
-	tc45_set_overflow_interrupt_level(&TCD5, TC45_INT_LVL_LO);
+	tc45_set_overflow_interrupt_level(&TCD5, TC45_INT_LVL_MED);
 	/* Configure TC in normal mode */
 	tc45_set_wgm(&TCD5, TC45_WG_NORMAL);
 	/* Configure call back interrupt */
@@ -118,6 +134,6 @@ void init_timerd5(void)
 	tc45_write_period(&TCD5, 162);//EVERY 5ms
 	tc45_set_resolution(&TCD5, 31250);
 	
-	pmic_enable_level(PMIC_LVL_LOW);
+	pmic_enable_level(PMIC_LVL_MEDIUM);
 	cpu_irq_enable();
 }

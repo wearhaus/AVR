@@ -244,14 +244,17 @@ static inline void set_color_from_buffer(void) {
 	m_led_struct[5].g = buffer_data[9];
 	m_led_struct[5].b = buffer_data[10];
 	
+	flag_ledRefresh=1; //display in another interrupt to avoid affecting uart receiving.
+      /*
 	for (int i=0; i<9; i++) {
 		colors[i] = buffer_data[i+2];
 		nvm_eeprom_write_byte(i+1, colors[i]);
 	}
 	
 	if (!ischarging()) {
+		//flag_ledRefresh=1; //display in another interrupt to avoid affecting uart receiving.
 		set_flash_ws2812(m_led_struct, 6);
-	}
+	}*/
 }
 
 static inline void set_mtch_register_from_buffer(void) {
@@ -360,6 +363,8 @@ static void interpret_message(void) {
 			send_response(UART_SET_COLOR, 0xff);
 			set_color_from_buffer();
 			resetDisablePulseCount();
+			shutdown_received = false;//should be powered on when got this message.
+
 			break;
 			
 		case UART_SET_PULSE:

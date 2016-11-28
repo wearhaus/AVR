@@ -34,6 +34,7 @@ extern volatile uint16_t chargeLVL5;
 extern volatile uint16_t chargeLVL6;
 
 extern volatile uint8_t  chargeBrightness;
+extern uint8_t flag_ledRefresh;
 
 // all rgb led data
 extern volatile led_struct m_led_struct[LED_COUNT];

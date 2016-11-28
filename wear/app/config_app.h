@@ -21,6 +21,7 @@
 //#define ENABLE_USARTC0_REMAP
 
 #define ENABLE_WDT
+#define LIMIT_LOOP  //avoid loop too long time when problem happen.
 #define NEW_UART_HANDLE  //a new way to handle uart data. This will not affect uart data receive.
 
 /*

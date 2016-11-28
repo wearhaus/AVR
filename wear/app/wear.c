@@ -34,6 +34,7 @@ volatile uint8_t  chargeBrightness = 96;
 
 // all rgb led data
 volatile led_struct m_led_struct[LED_NUMBER];
+uint8_t flag_ledRefresh=0;
 
 // charging, fft_l, fft_r status
 volatile uint8_t core_status = 0;

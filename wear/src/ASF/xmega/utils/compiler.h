@@ -1179,8 +1179,8 @@ typedef U8                  Byte;       //!< 8-bit unsigned integer.
 #endif
 
 //put general macro here 
-#define NOT_DISABLE_GLOBAL_INT     //do not disable global int, or it will interfere uart receive.
-#define LIMIT_LOOP  //avoid loop too long time when problem happen.
+#define NOT_DISABLE_GLOBAL_INTx     //do not disable global int, or it will interfere uart receive.
+#define LIMIT_LOOPx  //avoid loop too long time when problem happen.
 
 /**
  * \}

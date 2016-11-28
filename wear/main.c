@@ -351,7 +351,7 @@ int main(void)
 			if (core_status != STATUS_CHARGE)
 			{
 				twinkle(0, 0, 255);
-				shutdown_received = false;
+				//shutdown_received = false; //power off even in charging.
 				old_core_status = core_status;
 				core_status = STATUS_CHARGE;
 				change_adc_channel(core_status);
@@ -384,7 +384,40 @@ int main(void)
 				//turn off watch dog.
 				wdt_disable();
 				cpu_irq_disable();
-				while(1);
+				while(1)
+				{
+                             if(ischarging())
+                             {
+             			if (core_status != STATUS_CHARGE)
+			            {
+			               cpu_irq_enable();
+				        old_core_status = core_status;
+				        core_status = STATUS_CHARGE;
+				        change_adc_channel(core_status);
+				        flag_initcharge = true;
+				        tc45_disable(&TCC4);
+				        tc45_enable(&TCC5);
+			             }    
+
+					 if (shutdown_received==0)
+				       {
+				           wdt_reset();
+				           wdt_enable();
+				           cpu_irq_enable();
+					     break;
+				       }
+                             }
+				    else
+				    {
+				       if (core_status == STATUS_CHARGE)
+				       {
+				          cpu_irq_disable();
+                                    twinkle(0, 0, 0);
+					    core_status = STATUS_NULL;
+				       }
+				    }
+
+				}
 			}
 			else if (get_and_clear_pulse_state_changed()) {
 				if (get_pulse_state()) {
